@@ -21,7 +21,7 @@ function getProductList(){
     })
   }
 
-  //產品列表渲染
+//產品列表渲染
   function renderProducts(cate){
     let str='';
         const filterData=productData.filter(item=>{
@@ -149,3 +149,53 @@ disCardAllBtn.addEventListener('click',function(e){
         alert(`購物車已經清空!`)
     })
 })
+
+// 送出訂單
+const orderInfoBtn = document.querySelector('.orderInfo-btn');
+orderInfoBtn.addEventListener('click',function(e){
+    e.preventDefault();
+    if(cartData.length == 0){
+        alert('請加入購物車');
+        return;
+    }
+
+    const inputContent = document.querySelectorAll('.orderInfo-input');
+    const alertMessage = document.querySelectorAll('.orderInfo-message');
+
+    if(inputContent[0].value ==''){
+        alert(`請輸入${alertMessage[0].dataset.message}`)
+        return;
+    }else if (inputContent[1].value ==''){
+        alert(`請輸入${alertMessage[1].dataset.message}`)
+        return;
+    }else if (inputContent[2].value ==''){
+        alert(`請輸入${alertMessage[2].dataset.message}`)
+        return;
+    }else if (inputContent[3].value ==''){
+        alert(`請輸入${alertMessage[3].dataset.message}`)
+        return;
+    }else if (inputContent[4].value ==''){
+        alert(`請輸入${alertMessage[4].dataset.message}`)
+        return;
+    }
+  
+    axios.post(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/orders`,{
+        "data": {
+            "user": {
+              "name": inputContent[0].value,
+              "tel": inputContent[1].value,
+              "email": inputContent[2].value,
+              "address": inputContent[3].value,
+              "payment": inputContent[4].value
+            }
+          }
+    }).then(function(response){
+        alert('訂單建立成功!')
+        getCartList();
+    })
+    
+    //送出訂單後表單reset
+    const form = document.querySelector('.orderInfo-form')
+    form.reset();
+})
+
