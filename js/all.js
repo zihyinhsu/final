@@ -1,5 +1,6 @@
 const productList = document.querySelector('.productWrap');
 const cartList=document.querySelector('.shoppingCart-tableList')
+const productSelect = document.querySelector('.productSelect')
 
 //初始化
 function init(){
@@ -17,7 +18,8 @@ function getProductList(){
     .then(function(response){
         productData = response.data.products;
         console.log(productData)
-    renderProducts();
+        renderProducts();
+        getCategories();
     })
   }
 
@@ -44,8 +46,30 @@ function getProductList(){
         productList.innerHTML=str;
 }
 
+//取出category
+function getCategories(){
+    //先取出所有的category
+    let unSort = productData.map(item=>{
+        return item.category;
+    })
+    // console.log(unSort)
+    //篩選出重複的category
+    let sorted  = unSort.filter((item,i)=>{
+        return unSort.indexOf(item)===i
+    })
+    // console.log(sorted)
+    renderCategories(sorted)
+}
+// render Category
+function renderCategories(sorted){
+    let str='<option value="" selected>全部</option>';
+    sorted.forEach(item=>{
+        str+=`<option value="${item}">${item}</option>`
+    })
+    productSelect.innerHTML=str;
+}
+
 //篩選資料綁監聽 (監聽都寫在外層，innerHTML寫在內層)
-const productSelect = document.querySelector('.productSelect')
 productSelect.addEventListener('change',function(){
     renderProducts(productSelect.value)
 })
